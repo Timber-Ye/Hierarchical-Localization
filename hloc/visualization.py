@@ -15,7 +15,7 @@ def visualize_sfm_2d(reconstruction, image_dir, color_by='visibility',
     if not isinstance(reconstruction, pycolmap.Reconstruction):
         reconstruction = pycolmap.Reconstruction(reconstruction)
 
-    if not selected:
+    if not selected:  # && then select one image randomly
         image_ids = reconstruction.reg_image_ids()
         selected = random.Random(seed).sample(
                 image_ids, min(n, len(image_ids)))
@@ -26,7 +26,7 @@ def visualize_sfm_2d(reconstruction, image_dir, color_by='visibility',
         visible = np.array([p.has_point3D() for p in image.points2D])
 
         if color_by == 'visibility':
-            color = [(0, 0, 1) if v else (1, 0, 0) for v in visible]
+            color = [(0, 0, 1) if v else (1, 0, 0) for v in visible]  # && blue for pixels that have corresponding triangulated 3D point, red for the rest.
             text = f'visible: {np.count_nonzero(visible)}/{len(visible)}'
         elif color_by == 'track_length':
             tl = np.array([reconstruction.points3D[p.point3D_id].track.length()

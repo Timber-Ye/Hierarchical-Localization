@@ -64,7 +64,7 @@ def run_reconstruction(sfm_dir: Path,
     with OutputCapture(verbose):
         with pycolmap.ostream():
             reconstructions = pycolmap.incremental_mapping(
-                database_path, image_dir, models_path, options=options)
+                database_path, image_dir, models_path, options=options)  # ** Incremental SfM
 
     if len(reconstructions) == 0:
         logger.error('Could not reconstruct any model!')
@@ -84,8 +84,8 @@ def run_reconstruction(sfm_dir: Path,
 
     for filename in ['images.bin', 'cameras.bin', 'points3D.bin']:
         if (sfm_dir / filename).exists():
-            (sfm_dir / filename).unlink()
-        shutil.move(
+            (sfm_dir / filename).unlink()  # && delete file directory
+        shutil.move(  # && Recursively move a file or directory (src) to another location (dst) and return the destination.
             str(models_path / str(largest_index) / filename), str(sfm_dir))
     return reconstructions[largest_index]
 

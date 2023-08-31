@@ -23,9 +23,9 @@ def init_figure(height: int = 800) -> go.Figure:
     """Initialize a 3D figure."""
     fig = go.Figure()
     axes = dict(
-        visible=False,
+        visible=True,
         showbackground=False,
-        showgrid=False,
+        showgrid=True,
         showline=False,
         showticklabels=True,
         autorange=True,
@@ -162,7 +162,7 @@ def plot_reconstruction(
         cs: float = 1.0):
     # Filter outliers
     bbs = rec.compute_bounding_box(0.001, 0.999)
-    # Filter points, use original reproj error here
+    # ** Filter points, use original reproj error here
     p3Ds = [p3D for _, p3D in rec.points3D.items() if (
                             (p3D.xyz >= bbs[0]).all() and
                             (p3D.xyz <= bbs[1]).all() and

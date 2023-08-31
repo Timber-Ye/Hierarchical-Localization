@@ -170,11 +170,11 @@ class ImageDataset(torch.utils.data.Dataset):
         'interpolation': 'cv2_area',  # pil_linear is more accurate but slower
     }
 
-    def __init__(self, root, conf, paths=None):
+    def __init__(self, root, conf, paths=None):  # && paths is used to select specific images for feature extraction, if it is none, then all images under root will be included.
         self.conf = conf = SimpleNamespace(**{**self.default_conf, **conf})
         self.root = root
 
-        if paths is None:
+        if paths is None:  # && Include all images for 3D point cloud reconstruction.
             paths = []
             for g in conf.globs:
                 paths += glob.glob(
@@ -184,7 +184,7 @@ class ImageDataset(torch.utils.data.Dataset):
             paths = sorted(set(paths))
             self.names = [Path(p).relative_to(root).as_posix() for p in paths]
             logger.info(f'Found {len(self.names)} images in root {root}.')
-        else:
+        else:  # && select one specific image as input for visual localization
             if isinstance(paths, (Path, str)):
                 self.names = parse_image_lists(paths)
             elif isinstance(paths, collections.Iterable):
@@ -254,7 +254,7 @@ def main(conf: Dict,
 
     loader = torch.utils.data.DataLoader(
         dataset, num_workers=1, shuffle=False, pin_memory=True)
-    for idx, data in enumerate(tqdm(loader)):
+    for idx, data in enumerate(loader):
         name = dataset.names[idx]
         pred = model({'image': data['image'].to(device, non_blocking=True)})
         pred = {k: v[0].cpu().numpy() for k, v in pred.items()}

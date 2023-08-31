@@ -34,7 +34,7 @@ class OutputCapture:
 
 def create_db_from_model(reconstruction: pycolmap.Reconstruction,
                          database_path: Path) -> Dict[str, int]:
-    if database_path.exists():
+    if database_path.exists():  # ?? Database
         logger.warning('The database already exists, deleting it.')
         database_path.unlink()
 
@@ -106,7 +106,7 @@ def estimation_and_geometric_verification(database_path: Path,
     logger.info('Performing geometric verification of the matches...')
     with OutputCapture(verbose):
         with pycolmap.ostream():
-            pycolmap.verify_matches(
+            pycolmap.verify_matches(  # ?? How
                 database_path, pairs_path,
                 max_num_trials=20000, min_inlier_ratio=0.1)
 
